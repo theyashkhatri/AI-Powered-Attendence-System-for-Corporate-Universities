@@ -64,12 +64,24 @@ def non_max_suppression_fast(boxes, overlapThresh):
 def main():
     cap = cv2.VideoCapture('test_video.mp4')
 
+    if not cap.isOpened():
+        print("Error: Could not open video file 'test_video.mp4'")
+        return
+
     fps_start_time = datetime.datetime.now()
     fps = 0
     total_frames = 0
 
+    total_persons = 0
+
     while True:
         ret, frame = cap.read()
+        if not ret or frame is None:
+            # Loop the video back to the beginning
+            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            fps_start_time = datetime.datetime.now()
+            total_frames = 0
+            continue
         frame = imutils.resize(frame, width=600)
         total_frames = total_frames + 1
 
@@ -97,6 +109,7 @@ def main():
         rects = non_max_suppression_fast(boundingboxes, 0.3)
 
         objects = tracker.update(rects)
+        total_persons = max(total_persons, len(tracker.objects) + len(tracker.disappeared))
         for (objectId, bbox) in objects.items():
             x1, y1, x2, y2 = bbox
             x1 = int(x1)
@@ -118,6 +131,9 @@ def main():
         fps_text = "FPS: {:.2f}".format(fps)
 
         cv2.putText(frame, fps_text, (5, 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 1)
+
+        count_text = "Total Persons: {}".format(tracker.nextObjectID)
+        cv2.putText(frame, count_text, (5, 60), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 255, 0), 1)
 
         cv2.imshow("Application", frame)
         key = cv2.waitKey(1)
