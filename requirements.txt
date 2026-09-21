@@ -1,0 +1,17 @@
+# AI-Powered Attendance System for Corporate Universities
+# Python dependencies
+
+# Computer Vision - video capture, DNN inference, drawing utilities
+opencv-python==4.10.0.84
+
+# Image processing utilities - resizing, convenience wrappers
+imutils==0.5.4
+
+# Numerical computing - array ops, NMS, bounding box math
+numpy==2.5.3
+
+# Scientific computing - spatial distance (cdist) for centroid tracking
+scipy==1.18.1
+
+# Run the below code to install Requirements
+# pip install -r requirements.txt
